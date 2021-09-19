@@ -11,5 +11,21 @@ sendButton.onclick = async function () {
       },
       body: JSON.stringify({'text': textToSend})
       
-  }).then(response => response.json()).then(data => console.log(data.result)).catch(error => console.log(error))
+  })
+  .finally(() => stopLoadingAnimation())
+  .then(response => response.json())
+  .then(data => renderAnswer(data))
+  .catch(error => console.log(error))
+
+  startLoadAnimation()
+
+
 };
+
+function startLoadAnimation() {
+
+}
+
+function stopLoadingAnimation() {
+
+}

@@ -7,7 +7,7 @@ html {
 
 body {
   font-family: "Patua One", cursive;
-  background-color: #85dcbb;
+  background-image: linear-gradient(to bottom right, #85dcbb, 90%, #fff);
   font-size: 2em;
   margin: auto;
   width: 60%;
@@ -20,9 +20,9 @@ h1 {
 
 label,
 textarea {
-  font-size: 0.8rem;
+  font-size: 1.5rem;
   letter-spacing: 1px;
-  margin: 0.8em;
+  margin: 0.7rem;
 }
 
 .main-input {
@@ -89,3 +89,29 @@ main {
   );
   box-shadow: 0 4px 15px 0 rgba(126, 52, 161, 0.75);
 }
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
