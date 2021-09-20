@@ -143,6 +143,7 @@ header {
   flex-direction: row-reverse;
   width: 100%; /* Full width */
   background-color: #ddd; /* Grey background */
+  border-radius: 10px;
 }
 
 .scale {
@@ -152,6 +153,7 @@ header {
   color: white; /* White text color */
   width: 0px;
   transition: width 2s;
+
 }
 
 .good-scale {

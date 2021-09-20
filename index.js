@@ -1,15 +1,12 @@
 const sendButton = document.getElementById("send-button");
 
 let mainSection = document.getElementById("main");
-let MIN_LOADING_TIME =1000
+let MIN_LOADING_TIME = 2000;
 
-
-
-
-renderStartPage()
+renderStartPage();
 
 async function sendInfo(event) {
-  if (event.target.className !== 'send-button') return
+  if (event.target.className !== "send-button") return;
   textToSend = document.querySelector(".main-input").value;
 
   const response = fetch("https://sentim-api.herokuapp.com/api/v1/", {
@@ -21,20 +18,22 @@ async function sendInfo(event) {
     body: JSON.stringify({ text: textToSend }),
   })
     .then((response) => response.json())
-    .then((data) => {fetchQuote(data)
-      .finally(() => clearMainSection())
-      .then(r => r.json())
-      .then(quot => renderAnswer(data, quot))
-      .catch(error => renderError(error))})
+    .then((data) => {
+      fetchQuote(data)
+        .finally(() => clearMainSection())
+        .then((r) => r.json())
+        .then((quot) => renderAnswer(data, quot))
+        .catch((error) => renderError(error));
+    })
     .catch((error) => renderError(error));
 
   startLoadAnimation();
-};
+}
 
 function startLoadAnimation() {
   mainSection.style.height = "40%";
-  
-  removeAllChildNodes(mainSection);
+
+  clearMainSection()
 
   let barDiv = document.createElement("div");
   barDiv.classList.add("bar");
@@ -50,71 +49,71 @@ function startLoadAnimation() {
   mainSection.append(barDiv);
 }
 
-function renderAnswer({result: {polarity}}, quot) {
+function renderAnswer({ result: { polarity } }, quot) {
   quot = quot[getRandomIndx(quot.length)];
-  mainSection.style.height = '450px';
-  let polarityPresent = polarity * 100
-  
-  let clickHandler = function() {
-    clearMainSection()
-    renderStartPage()
-  }
+  mainSection.style.height = "450px";
+  let polarityPresent = polarity * 100;
+
+  let clickHandler = function () {
+    clearMainSection();
+    renderStartPage();
+  };
   renderScale(mainSection, polarityPresent);
-  renderQuot(quot , polarityPresent, mainSection)
-  renderButton(mainSection, 'Try again', clickHandler)
+  renderQuot(quot, polarityPresent, mainSection);
+  renderButton(mainSection, "Try again", clickHandler);
 
-  mainSection.classList.add('answer-main')
-  
-
+  mainSection.classList.add("answer-main");
 }
 
 function renderScale(fatherDiv, scalePercent) {
-  let scaleContainerDiv = document.createElement('div');
-  let scaleDiv = document.createElement('div');
-  
-  scaleDiv.innerHTML = `${scalePercent}%`
+  let scaleContainerDiv = document.createElement("div");
+  let scaleDiv = document.createElement("div");
 
-  scaleContainerDiv.classList.add('scale-container', 'box-sizing')
-  scaleDiv.classList.add('scale', 'box-sizing');
+  scaleDiv.innerHTML = `${scalePercent}%`;
 
-  scaleContainerDiv.append(scaleDiv)
+  scaleContainerDiv.classList.add("scale-container", "box-sizing");
+  scaleDiv.classList.add("scale", "box-sizing");
+
+  scaleContainerDiv.append(scaleDiv);
 
   fatherDiv.append(scaleContainerDiv);
 
-  if (scalePercent>0) {
-    scaleDiv.classList.add('good-scale')
+  if (scalePercent > 0) {
+    scaleDiv.classList.add("good-scale");
   } else if (scalePercent < 0) {
-    scaleDiv.classList.add('bad-scale')
+    scaleDiv.classList.add("bad-scale");
   }
-  setTimeout(() => scaleDiv.style.width = `${Math.abs(scalePercent)}%`, 100)
-  
+  setTimeout(() => (scaleDiv.style.width = `${Math.abs(scalePercent)}%`), 100);
 }
 
-function renderQuot({text} ,polarityPresent, fatherDiv) {
-  let quotDiv = document.createElement('div');
-  quotDiv.classList.add('quot')
-  quotDiv.innerHTML = `"${text}"`
-  
-  let resultDiv = document.createElement('div');
+function renderQuot({ text }, polarityPresent, fatherDiv) {
+  let quotDiv = document.createElement("div");
+  quotDiv.classList.add("quot");
+  quotDiv.innerHTML = `"${text}"`;
+
+  let resultDiv = document.createElement("div");
 
   if (polarityPresent > 0) {
-    resultDiv.innerHTML ='Your text is positive. Here is an inspirational quot:'
+    resultDiv.innerHTML =
+      "Your text is positive. Here is an inspirational quot:";
   } else if (polarityPresent === 0) {
-    resultDiv.innerHTML = 'Your text is neutral. Here is an inspirational quot:'
+    resultDiv.innerHTML =
+      "Your text is neutral. Here is an inspirational quot:";
   } else {
-    resultDiv.innerHTML = 'Your text is negative. Here is an inspirational quot:'
+    resultDiv.innerHTML =
+      "Your text is negative. Here is an inspirational quot:";
   }
 
-  fatherDiv.append(resultDiv, quotDiv)
+  fatherDiv.append(resultDiv, quotDiv);
 }
 
 function renderButton(fatherElement, html, clickHandler) {
-  let button = document.createElement('button')
-  button.className = 'send-button'
+  let button = document.createElement("button");
+  button.className = "send-button";
   button.innerHTML = html;
 
-  button.onclick = clickHandler
-  fatherElement.append(button)
+  button.onclick = clickHandler;
+  fatherElement.append(button);
 }
 
 function renderError(error) {
@@ -122,10 +121,12 @@ function renderError(error) {
 }
 
 function fetchQuote() {
-  return new Promise(function(resolve) {
-    setTimeout(() => resolve(fetch("https://type.fit/api/quotes")), MIN_LOADING_TIME)
-  })
-
+  return new Promise(function (resolve) {
+    setTimeout(
+      () => resolve(fetch("https://type.fit/api/quotes")),
+      MIN_LOADING_TIME
+    );
+  });
 }
 
 function removeAllChildNodes(parent) {
@@ -139,29 +140,27 @@ function clearMainSection() {
 }
 
 function getRandomIndx(size) {
-  return Math.floor(Math.random() * size)
+  return Math.floor(Math.random() * size);
 }
 
 function renderStartPage() {
-  let p = document.createElement('p')
-  p.innerHTML = 'Tell us whatever you like and we will tell you what we think about it.'
+  let p = document.createElement("p");
+  p.innerHTML =
+    "Tell us whatever you like and we will tell you what we think about it.";
 
-  let label = document.createElement('label')
-  label.for = 'main-input';
-  label.innerHTML = 'Enter here whatever you want:'
-  
-  let textArea = document.createElement('textarea')
-  textArea.classList.add('main-input');
-  textArea.name = 'main-input';
-  textArea.rows ='3';
-  textArea.cols = '40';
-  textArea.innerHTML = 'I love lotr so much! I cant stop watching it...'
-  
-  
-  mainSection.append(p, label, textArea)
-  renderButton(mainSection, 'Send', sendInfo)
+  let label = document.createElement("label");
+  label.for = "main-input";
+  label.innerHTML = "Enter here whatever you want:";
 
-  mainSection.className = 'main'
+  let textArea = document.createElement("textarea");
+  textArea.classList.add("main-input");
+  textArea.name = "main-input";
+  textArea.rows = "3";
+  textArea.cols = "40";
+  textArea.innerHTML = "I love lotr so much! I cant stop watching it...";
 
-  
+  mainSection.append(p, label, textArea);
+  renderButton(mainSection, "Send", sendInfo);
+
+  mainSection.className = "main";
 }
