@@ -175,3 +175,11 @@ header {
   padding: 15px;
   border-radius: 15px;
 }
+
+.error {
+  background-color: #f24645;
+  margin: auto;
+  width: 50%;
+  border-radius: 10px;
+  text-align: center;
+}

@@ -69,7 +69,8 @@ function renderScale(fatherDiv, scalePercent) {
   let scaleContainerDiv = document.createElement("div");
   let scaleDiv = document.createElement("div");
 
-  scaleDiv.innerHTML = `${scalePercent}%`;
+  // scaleDiv.innerHTML = `${scalePercent}%`;
+ 
 
   scaleContainerDiv.classList.add("scale-container", "box-sizing");
   scaleDiv.classList.add("scale", "box-sizing");
@@ -84,6 +85,7 @@ function renderScale(fatherDiv, scalePercent) {
     scaleDiv.classList.add("bad-scale");
   }
   setTimeout(() => (scaleDiv.style.width = `${Math.abs(scalePercent)}%`), 100);
+  animateValue(scaleDiv, 0, scalePercent, 1300)
 }
 
 function renderQuot({ text }, polarityPresent, fatherDiv) {
@@ -117,7 +119,15 @@ function renderButton(fatherElement, html, clickHandler) {
 }
 
 function renderError(error) {
-  console.log(error);
+  clearMainSection()
+
+  let errorDiv = document.createElement('div');
+  errorDiv.classList.add('error');
+  errorDiv.innerHTML = "" + error;
+  
+  mainSection.append(errorDiv)
+  
+  renderButton(mainSection, 'Try again', renderStartPage)
 }
 
 function fetchQuote() {
@@ -144,6 +154,10 @@ function getRandomIndx(size) {
 }
 
 function renderStartPage() {
+  clearMainSection()
+
+  mainSection.style.height = "450px";
+
   let p = document.createElement("p");
   p.innerHTML =
     "Tell us whatever you like and we will tell you what we think about it.";
@@ -163,4 +177,17 @@ function renderStartPage() {
   renderButton(mainSection, "Send", sendInfo);
 
   mainSection.className = "main";
+}
+
+function animateValue(obj, start, end, duration) {
+  let startTimestamp = null;
+  const step = (timestamp) => {
+    if (!startTimestamp) startTimestamp = timestamp;
+    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+    obj.innerHTML = Math.floor(progress * (end - start) + start) + '%';
+    if (progress < 1) {
+      window.requestAnimationFrame(step);
+    }
+  };
+  window.requestAnimationFrame(step);
 }
