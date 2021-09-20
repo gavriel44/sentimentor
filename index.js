@@ -63,7 +63,7 @@ function renderAnswer({result: {polarity}}, quot) {
   renderQuot(quot , polarityPresent, mainSection)
   renderButton(mainSection, 'Try again', clickHandler)
 
-  mainSection.className = 'answer-main'
+  mainSection.classList.add('answer-main')
   
 
 }
