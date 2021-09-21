@@ -1,5 +1,3 @@
-const sendButton = document.getElementById("send-button");
-
 let mainSection = document.getElementById("main");
 let MIN_LOADING_TIME = 2000;
 
@@ -9,31 +7,45 @@ async function sendInfo(event) {
   if (event.target.className !== "send-button") return;
   textToSend = document.querySelector(".main-input").value;
 
-  const response = fetch("https://sentim-api.herokuapp.com/api/v1/", {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ text: textToSend }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      fetchQuote(data)
-        .finally(() => clearMainSection())
-        .then((r) => r.json())
-        .then((quot) => renderAnswer(data, quot))
-        .catch((error) => renderError(error));
-    })
-    .catch((error) => renderError(error));
-
   startLoadAnimation();
+  
+  try {
+
+    const response = await fetch("https://sentim-api.herokuapp.com/api/v1/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: textToSend }),
+    });
+
+    let result = await response.json();
+
+    let responseQuot = await fetchQuote(result);
+    let resultQuot = await responseQuot.json();
+
+    clearMainSection();
+    renderAnswer(result, resultQuot);
+  } catch (err) {
+    renderError(err);
+  }
+
+  // .then((response) => response.json())
+  // .then((data) => {
+  //   fetchQuote(data)
+  //     .finally(() => clearMainSection())
+  //     .then((r) => r.json())
+  //     .then((quot) => renderAnswer(data, quot))
+  //     .catch((error) => renderError(error));
+  // })
+  // .catch((error) => renderError(error));
 }
 
 function startLoadAnimation() {
   mainSection.style.height = "40%";
 
-  clearMainSection()
+  clearMainSection();
 
   let barDiv = document.createElement("div");
   barDiv.classList.add("bar");
@@ -70,7 +82,6 @@ function renderScale(fatherDiv, scalePercent) {
   let scaleDiv = document.createElement("div");
 
   // scaleDiv.innerHTML = `${scalePercent}%`;
- 
 
   scaleContainerDiv.classList.add("scale-container", "box-sizing");
   scaleDiv.classList.add("scale", "box-sizing");
@@ -85,7 +96,7 @@ function renderScale(fatherDiv, scalePercent) {
     scaleDiv.classList.add("bad-scale");
   }
   setTimeout(() => (scaleDiv.style.width = `${Math.abs(scalePercent)}%`), 100);
-  animateValue(scaleDiv, 0, scalePercent, 1300)
+  animateValue(scaleDiv, 0, scalePercent, 1300);
 }
 
 function renderQuot({ text }, polarityPresent, fatherDiv) {
@@ -119,15 +130,15 @@ function renderButton(fatherElement, html, clickHandler) {
 }
 
 function renderError(error) {
-  clearMainSection()
+  clearMainSection();
 
-  let errorDiv = document.createElement('div');
-  errorDiv.classList.add('error');
+  let errorDiv = document.createElement("div");
+  errorDiv.classList.add("error");
   errorDiv.innerHTML = "" + error;
-  
-  mainSection.append(errorDiv)
-  
-  renderButton(mainSection, 'Try again', renderStartPage)
+
+  mainSection.append(errorDiv);
+
+  renderButton(mainSection, "Try again", renderStartPage);
 }
 
 function fetchQuote() {
@@ -154,7 +165,7 @@ function getRandomIndx(size) {
 }
 
 function renderStartPage() {
-  clearMainSection()
+  clearMainSection();
 
   mainSection.style.height = "450px";
 
@@ -184,7 +195,7 @@ function animateValue(obj, start, end, duration) {
   const step = (timestamp) => {
     if (!startTimestamp) startTimestamp = timestamp;
     const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-    obj.innerHTML = Math.floor(progress * (end - start) + start) + '%';
+    obj.innerHTML = Math.floor(progress * (end - start) + start) + "%";
     if (progress < 1) {
       window.requestAnimationFrame(step);
     }
